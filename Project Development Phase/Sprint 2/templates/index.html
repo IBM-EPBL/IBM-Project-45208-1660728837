@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JobSeeker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    {% if current_user.is_anonymous %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                    {% else %}
+                        <a href="{{ url_for('jobseekerprofile') }}" class="btn btn-success me-2">Profile</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </nav>
+    <section>
+        <p>Welcome {{current_user.email}}</p>
+    </section>
+
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Company Name</th>
+                <th scope="col">Job Title</th>
+                <th scope="col">Applications Left</th>
+                <th scope="col">Skills Required</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for job in job_offers %}
+                <tr>
+                    <th scope="row">{{ job.id }}</th>
+                    <td>{{ get_company(job.company).com_name }}</td>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.total_applications }}</td>
+                    <td>{{ job.skill_required }}</td>
+                {% if req_exist(job.id, job_seeker(current_user.id).id) %}
+                    <td><button type="button" class="btn btn-success" disabled>Applied</button></td>
+                {% else %}
+                    <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#job_apply_modal{{ job.id }}">Apply</button></td>
+                {% endif %}
+                    <div class="modal fade" id="job_apply_modal{{ job.id }}" tabindex="-1" aria-labelledby="job_apply_modal_Label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="post" id="job_request_form">
+                                {{ form.job_offer(value=job.id, class='d-none') }}
+                                {{ form.job_seeker(value=job_seeker(current_user.id).id, class='d-none') }}
+                                {{ form.hidden_tag() }}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="job_apply_modal_Label">Apply for {{ job.job_title }}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><span class="font-weight-bold">Company Name: </span>{{ get_company(job.company).com_name }}</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="font-weight-bold">Job Title: </span>{{ job.job_title }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><span class="font-weight-bold">Applications Left: </span>{{ job.total_applications }}</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="font-weight-bold">Skill Required: </span>{{ job.skill_required }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Confirm</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/static/js/job_request.js"></script>
+{% endblock %}

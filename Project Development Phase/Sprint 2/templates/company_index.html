@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JobSeeker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <a href="{{ url_for('companyprofile') }}" class="btn btn-success me-2">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <section>
+        <div class="container">
+            <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#create_job">
+                Create Job Post
+            </button>
+            <div class="modal fade" id="create_job" tabindex="-1" aria-labelledby="create_job_Label" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <form method="post" id="job_creation_form">
+                        {{ form.company_id(value=companyprofile.id, class='d-none') }}
+                        {{ form.hidden_tag() }}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="create_job_Label">Create Job Post</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="job_title" class="form-label">Job Title</label>
+                                        {{ form.job_title(placeholder="Job Title", class="form-control") }}
+                                        {% for error in form.job_title.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col mb-3">
+                                        <label for="total_applications" class="form-label">Total Applications</label>
+                                        {{ form.total_applications(placeholder="Total Applications", class="form-control") }}
+                                        {% for error in form.total_applications.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label for="skills_required" class="form-label">Skills Required</label>
+                                        {{ form.skill_required(placeholder="Skill Required", class="form-control") }}
+                                        {% for error in form.skill_required.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                        {#                                        <select class="form-select" id="skills_required" name="skills_required" required>#}
+                                        {#                                            <option value="Java">Java</option>#}
+                                        {#                                            <option value="Python">Python</option>#}
+                                        {#                                            <option value="C">C</option>#}
+                                        {#                                        </select>#}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Create Job</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% include "compnay_joboffer_table.html" %}
+        </div>
+    </section>
+
+    <script src="/static/js/create_job.js"></script>
+{% endblock %}
