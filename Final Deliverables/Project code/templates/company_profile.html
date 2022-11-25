@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JobSeeker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{{ url_for('companyindex') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <a href="{{ url_for('companyindex') }}" class="btn btn-success me-2">Home</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <section class="mb-3">
+        <form method="post" action="/companyprofile">
+            {{ form.hidden_tag() }}
+            {{ form.user_id(value=current_user.id, class='d-none') }}
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h4>Company Details: </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            {{ form.com_name(placeholder="Company Name", class="form-control") }}
+                            {% for error in form.com_name.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="company_address" class="form-label">Address</label>
+                            {{ form.com_address(placeholder="Company Address", class="form-control") }}
+                            {% for error in form.com_address.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        {{ form.submit(class="btn btn-success") }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+
+{% endblock %}
